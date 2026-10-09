@@ -1,0 +1,61 @@
+---
+import Opener from '../Opener.astro';
+import Stack from '../Stack.astro';
+import { ph, caps } from '../../content';
+---
+<section class="section" id="capabilities" aria-labelledby="cap-h">
+  <div class="wrap">
+    <Opener n="06" title="Capabilities" id="cap-h">spec sheet · rev. B</Opener>
+    <p class="display cap-title" data-split>Seven disciplines. One <em>estate.</em></p>
+
+    <div class="grid cap-grid">
+      <div class="cap-fig"><Stack /></div>
+
+      <ol class="spec" data-spec>
+        {caps.map((c, i) => (
+          <li class="spec-row" data-cap={i} data-reveal>
+            <span class="s-n mono">{c.n}</span>
+            <h3 class="s-name">{c.name}</h3>
+            <p class="s-d">{c.d}</p>
+            <dl class="s-out mono">
+              <dt class="label">Deliverables</dt><dd set:html={ph(c.out)} />
+              <dt class="label">AWS services</dt><dd>{c.svc}</dd>
+            </dl>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cap-title { max-width: 13ch; margin-bottom: clamp(40px, 6vw, 88px); }
+  .cap-grid { align-items: start; row-gap: 24px; }
+  .cap-fig { grid-column: 1 / span 5; position: sticky; top: calc(var(--header) + 28px); }
+  .spec { grid-column: 6 / -1; list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+
+  .spec-row {
+    display: grid; grid-template-columns: 6ch minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--col-gap); row-gap: 14px;
+    padding-block: 30px 34px; border-bottom: 1px solid var(--rule); position: relative;
+  }
+  .spec-row::before { content: ''; position: absolute; left: 0; top: -1px; width: 100%; height: 2px; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform 500ms cubic-bezier(.2,.7,.2,1); }
+  .spec-row.is-active::before { transform: scaleX(1); }
+  .s-n { font-size: 12px; padding-top: 0.75em; display: flex; align-items: baseline; gap: 8px; }
+  .s-n::after { content: ''; width: 7px; height: 7px; background: var(--accent); transform: scale(0); transition: transform 300ms ease; }
+  .spec-row.is-active .s-n::after { transform: scale(1); }
+  .s-name { grid-column: 2 / -1; font-size: clamp(1.8rem, 1rem + 2.2vw, 3.1rem); line-height: 1; letter-spacing: -0.02em; }
+  .s-d { grid-column: 2; margin: 0; }
+  .s-out { grid-column: 3; margin: 0.2em 0 0; font-size: 12.5px; line-height: 1.55; display: grid; gap: 4px; align-content: start; }
+  .s-out dt { font-size: 11px; }
+  .s-out dd { margin: 0 0 10px; }
+
+  @media (max-width: 1000px) {
+    .cap-fig { grid-column: 1 / -1; position: static; justify-self: start; width: 100%; }
+    .spec { grid-column: 1 / -1; }
+  }
+  @media (max-width: 640px) {
+    .spec-row { grid-template-columns: 1fr; }
+    .s-n { padding: 0; }
+    .s-name, .s-d, .s-out { grid-column: 1; }
+  }
+</style>

@@ -1,0 +1,65 @@
+---
+import Opener from '../Opener.astro';
+import { faqs } from '../../content';
+---
+<section class="section" id="faq" aria-labelledby="faq-h">
+  <div class="wrap">
+    <Opener n="09" title="Questions" id="faq-h">what procurement asks</Opener>
+
+    <div class="grid faq-grid">
+      <div class="faq-side">
+        <p class="display faq-title" data-split>Asked before every <em>contract.</em></p>
+        <p class="faq-note" data-reveal>Not here? Ask on the first call. An engineer answers, not a script.</p>
+      </div>
+
+      <div class="faq-list">
+        {faqs.map((f) => (
+          <details class="faq" data-reveal>
+            <summary>
+              <span class="faq-n mono">{f.n}</span>
+              <span class="faq-q">{f.q}</span>
+              <span class="faq-ico" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-a"><p>{f.a}</p></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-grid { align-items: start; row-gap: 40px; }
+  .faq-side { grid-column: 1 / span 5; position: sticky; top: calc(var(--header) + 32px); }
+  .faq-title { font-size: clamp(2.4rem, 1.2rem + 4vw, 5.2rem); max-width: 9ch; margin-bottom: 0.45em; }
+  .faq-note { max-width: 28ch; margin: 0; }
+  .faq-list { grid-column: 6 / -1; border-top: 1px solid var(--ink); }
+
+  .faq { border-bottom: 1px solid var(--rule); }
+  .faq summary {
+    display: grid; grid-template-columns: 6ch minmax(0, 1fr) 24px; column-gap: var(--col-gap); align-items: baseline;
+    padding-block: 22px; cursor: pointer; list-style: none;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq-n { font-size: 12px; }
+  .faq-q { font-size: clamp(1.4rem, 1rem + 1.3vw, 2.1rem); line-height: 1.05; letter-spacing: -0.015em; transition: transform 300ms cubic-bezier(.2,.7,.2,1); }
+  .faq summary:hover .faq-q { transform: translateX(8px); }
+  .faq-ico { position: relative; width: 15px; height: 15px; align-self: center; justify-self: end; }
+  .faq-ico::before, .faq-ico::after { content: ''; position: absolute; left: 0; top: 7px; width: 15px; height: 1px; background: var(--ink); transition: transform 300ms ease; }
+  .faq-ico::after { transform: rotate(90deg); }
+  .faq[open] .faq-ico::after { transform: rotate(0deg); }
+  .faq[open] .faq-q { font-style: italic; }
+  .faq-a { padding: 0 24px 26px calc(6ch + var(--col-gap)); max-width: 62ch; }
+  .faq-a p { margin: 0; }
+  .faq[open] .faq-a { animation: faq-in 420ms cubic-bezier(.2,.7,.2,1); }
+  @keyframes faq-in { from { opacity: 0; transform: translateY(-6px); } }
+
+  @media (max-width: 1000px) {
+    .faq-side, .faq-list { grid-column: 1 / -1; position: static; }
+    .faq-title { max-width: 12ch; }
+  }
+  @media (max-width: 560px) {
+    .faq summary { grid-template-columns: 5ch minmax(0, 1fr) 20px; }
+    .faq-a { padding-left: 0; }
+  }
+</style>

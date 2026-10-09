@@ -1,0 +1,129 @@
+---
+import Opener from '../Opener.astro';
+import { company, formEndpoint } from '../../config';
+import { ph } from '../../content';
+const mailable = !company.email.startsWith('[');
+---
+<section class="section" id="contact" aria-labelledby="contact-h">
+  <div class="wrap">
+    <Opener n="10" title="Contact" heading={false}>replies from an engineer, not a sales queue</Opener>
+    <h2 class="contact-h display" id="contact-h" data-split>Tell us the workload. We’ll bring an <em>engineer.</em></h2>
+
+    <div class="grid contact">
+      <div class="contact-direct" data-reveal>
+        <p class="label">Direct</p>
+        <p class="contact-line">{mailable ? <a href={`mailto:${company.email}`}>{company.email}</a> : <Fragment set:html={ph(company.email)} />}</p>
+        <p class="contact-line" set:html={ph(company.phone)} />
+        <p class="label contact-note">Onshore: {company.onshoreLocations}<br />Offshore: {company.offshoreCity}, India</p>
+      </div>
+
+      <form class="form" data-form data-endpoint={formEndpoint} novalidate data-reveal>
+        <div class="field">
+          <label for="f-name" class="label">Name</label>
+          <input id="f-name" name="name" type="text" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for="f-email" class="label">Work email</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" required />
+        </div>
+        <div class="field">
+          <label for="f-company" class="label">Company</label>
+          <input id="f-company" name="company" type="text" autocomplete="organization" required />
+        </div>
+        <div class="field field--wide">
+          <label for="f-need" class="label">What you need</label>
+          <textarea id="f-need" name="need" rows="4" required placeholder="e.g. two platform engineers for an EKS migration, overlap with US Eastern hours"></textarea>
+        </div>
+        <div class="hp" aria-hidden="true">
+          <label for="f-web">Leave empty</label>
+          <input id="f-web" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+        <div class="form-foot">
+          <button class="btn btn-ink" type="submit">Send <span class="arrow" aria-hidden="true">→</span></button>
+          <p class="form-status mono" role="status" aria-live="polite" data-status></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact-h { font-size: clamp(2.8rem, 0.8rem + 7.4vw, 8.8rem); line-height: 0.92; margin-bottom: clamp(48px, 7vw, 104px); max-width: 13ch; }
+  .contact { row-gap: 48px; align-items: start; }
+  .contact-direct { grid-column: 1 / span 4; }
+  .contact-line { font-size: clamp(1.4rem, 1rem + 1vw, 2rem); margin: 0 0 0.25em; word-break: break-word; }
+  .contact-note { margin-top: 28px; }
+  .form { grid-column: 6 / -1; display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--col-gap); row-gap: 28px; background: var(--glass); padding: clamp(18px, 2.4vw, 36px); border: 1px solid var(--rule); }
+  .field { display: grid; gap: 6px; }
+  .field:first-child { grid-column: 1 / -1; }
+  .field--wide { grid-column: 1 / -1; }
+  .field input, .field textarea {
+    font: inherit; font-size: 1.15em; color: var(--fg); background: transparent;
+    border: 0; border-bottom: 1px solid var(--fg); border-radius: 0; padding: 6px 0 8px; width: 100%;
+  }
+  .field textarea { resize: vertical; min-height: 4.5em; font-size: 1.05em; line-height: 1.35; }
+  .field textarea::placeholder { color: var(--fg-muted); opacity: 1; font-size: 0.85em; }
+  .field input:focus-visible, .field textarea:focus-visible { outline: none; border-bottom: 2px solid var(--ink); padding-bottom: 7px; background: rgb(255 255 255 / 0.6); }
+  .field[data-invalid] input, .field[data-invalid] textarea { border-bottom-style: dashed; }
+  .field :global(.field-err) { font-family: var(--mono); font-size: 12px; color: var(--fg); }
+  .field :global(.field-err)::before { content: '× '; color: var(--accent); font-weight: 500; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .form-foot { grid-column: 1 / -1; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .form-status { margin: 0; font-size: 12.5px; }
+  @media (max-width: 900px) {
+    .contact-direct, .form { grid-column: 1 / -1; }
+    .form { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-form]');
+  if (form) {
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const endpoint = form.dataset.endpoint || '';
+    const msgs: Record<string, string> = {
+      name: 'Your name, please.', email: 'A work email we can reply to.', company: 'Which company?', need: 'A line or two about the work.',
+    };
+    const check = (el: HTMLInputElement | HTMLTextAreaElement) => {
+      const field = el.closest('.field') as HTMLElement;
+      field.querySelector('.field-err')?.remove();
+      const ok = el.value.trim() !== '' && el.checkValidity();
+      if (ok) { field.removeAttribute('data-invalid'); el.removeAttribute('aria-invalid'); el.removeAttribute('aria-describedby'); return true; }
+      field.setAttribute('data-invalid', '');
+      const err = document.createElement('span');
+      err.className = 'field-err'; err.id = `${el.id}-err`; err.textContent = msgs[el.name] ?? 'Required.';
+      field.appendChild(err);
+      el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', err.id);
+      return false;
+    };
+    const fields = Array.from(form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('.field input, .field textarea'));
+    fields.forEach((f) => f.addEventListener('blur', () => { if (f.closest('[data-invalid]')) check(f); }));
+
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const bad = fields.filter((f) => !check(f));
+      if (bad.length) { bad[0].focus(); status.textContent = 'Check the marked fields.'; return; }
+      const data = Object.fromEntries(new FormData(form).entries());
+      if (data.website) return; // honeypot
+      delete data.website;
+      const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+      btn.disabled = true; status.textContent = 'Sending…';
+      try {
+        if (!endpoint) {
+          // STUB: no PUBLIC_FORM_ENDPOINT configured. See README → "Contact form".
+          console.info('[contact form stub] would POST', data);
+          await new Promise((r) => setTimeout(r, 400));
+        } else {
+          const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) });
+          if (!res.ok) throw new Error(String(res.status));
+        }
+        form.reset();
+        status.textContent = endpoint ? 'Sent. An engineer will reply by email.' : 'Stub mode: nothing was sent (no endpoint configured).';
+      } catch {
+        status.textContent = 'That didn’t go through. Email us directly instead.';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+</script>

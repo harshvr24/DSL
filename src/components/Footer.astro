@@ -1,0 +1,72 @@
+---
+import { company } from '../config';
+import { ph, places } from '../content';
+---
+<footer class="footer" data-footer>
+  <div class="wrap">
+    <!-- live clock strip: every place we work, right now -->
+    <ul class="strip mono" aria-label="Local time at each location" data-strip>
+      {places.map((p) => (
+        <li data-strip-zone={p.zone}><span class="strip-name">{p.name}</span> <time data-strip-time>--:--</time></li>
+      ))}
+    </ul>
+
+    <div class="footer-rule" aria-hidden="true" data-footer-rule><span class="label">0° — horizon · end of day</span></div>
+    <div class="grid footer-grid">
+      <p class="footer-mark" aria-hidden="true"><span class="footer-mask"><span data-footer-mark>DSL</span></span></p>
+      <div class="footer-legal mono">
+        <p><b>{company.legalName}</b></p>
+        <p>CIN <Fragment set:html={ph(company.cin)} /></p>
+        <p set:html={ph(company.address)} />
+      </div>
+      <div class="footer-meta mono">
+        <p>© {new Date().getFullYear()} {company.legalName}</p>
+        <p>AWS and Amazon Web Services are trademarks of Amazon.com, Inc. or its affiliates.</p>
+        <p>Coastline data: Natural Earth.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer { padding: 0 0 40px; overflow: clip; position: relative; }
+  .strip { list-style: none; margin: 0 0 clamp(40px, 6vw, 80px); padding: 14px 0; display: flex; flex-wrap: wrap; gap: 10px clamp(20px, 4vw, 64px); border-block: 1px solid var(--rule); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .strip-name { color: var(--fg-muted); margin-right: 8px; }
+  .strip time { font-variant-numeric: tabular-nums; }
+  .strip li::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 10px; border: 1px solid var(--ink); transform: translateY(-1px); }
+  .strip li[data-working='true']::before { background: var(--accent); border-color: var(--accent); }
+
+  .footer-rule { border-top: 2px solid var(--line); padding-top: 10px; margin-bottom: 56px; text-align: right; }
+  .footer-grid { row-gap: 24px; align-items: end; }
+  .footer-mark { grid-column: 1 / span 5; font-size: clamp(6rem, 3rem + 14vw, 17rem); line-height: 0.75; letter-spacing: -0.04em; margin: 0; }
+  .footer-mask { display: block; overflow: clip; padding-block: 0.12em 0.06em; margin-block: -0.12em -0.06em; }
+  .footer-mask span { display: block; }
+  .footer-legal { grid-column: 6 / span 4; font-size: 12px; line-height: 1.6; }
+  .footer-legal p, .footer-meta p { margin: 0 0 4px; }
+  .footer-legal b { font-weight: 500; }
+  .footer-meta { grid-column: 10 / -1; font-size: 11px; line-height: 1.6; color: var(--fg-muted); }
+  @media (max-width: 900px) {
+    .footer-mark, .footer-legal, .footer-meta { grid-column: 1 / -1; }
+  }
+</style>
+
+<script>
+  import { places } from '../content';
+  import { minuteOfDay, hm } from '../scripts/time';
+
+  const items = Array.from(document.querySelectorAll<HTMLElement>('[data-strip-zone]'));
+  if (items.length) {
+    const tick = () => {
+      const now = new Date();
+      for (const li of items) {
+        const p = places.find((x) => x.zone === li.dataset.stripZone);
+        const m = minuteOfDay(li.dataset.stripZone!, now);
+        const t = li.querySelector('[data-strip-time]');
+        if (t) { t.textContent = hm(m); t.setAttribute('datetime', now.toISOString()); }
+        if (p) li.dataset.working = String(m >= p.start && m < p.end);
+      }
+    };
+    tick();
+    setInterval(tick, 20000);
+  }
+</script>

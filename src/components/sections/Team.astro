@@ -1,0 +1,78 @@
+---
+import Opener from '../Opener.astro';
+import { roles } from '../../content';
+---
+<section class="section" id="team" aria-labelledby="team-h">
+  <div class="wrap">
+    <Opener n="05" title="Team" id="team-h">roles · who owns what</Opener>
+
+    <div class="grid team-intro">
+      <p class="display team-title" data-split>Named people. You <em>interview</em> them.</p>
+      <div class="team-body" data-reveal>
+        <p>
+          You see CVs before the contract and talk to every consultant before they start.
+          Certifications and project history come with each CV, per person.
+        </p>
+        <p>If someone is not working out, tell the engagement lead and we replace them.</p>
+      </div>
+    </div>
+
+    <div class="roles" role="table" aria-label="Roles and where they usually sit">
+      <div class="role role-head label" role="row">
+        <span role="columnheader">Ref</span>
+        <span role="columnheader">Role</span>
+        <span role="columnheader">Owns</span>
+        <span role="columnheader">Usually sits</span>
+      </div>
+      {roles.map((r) => (
+        <div class="role" role="row" data-reveal>
+          <span class="role-n mono" role="cell">{r.n}</span>
+          <span class="role-name" role="rowheader">{r.name}</span>
+          <span class="role-owns" role="cell">{r.owns}</span>
+          <span class="role-sits" role="cell">
+            <span class="sit" aria-hidden="true"><i class:list={['sit-on', { is: r.on }]}></i><i class:list={['sit-off', { is: r.off }]}></i></span>
+            <span class="label">{r.sits}</span>
+          </span>
+        </div>
+      ))}
+    </div>
+    <p class="label roles-key" aria-hidden="true">
+      <span class="sit"><i class="sit-on is"></i><i class="sit-off"></i></span> onshore
+      <span class="sit"><i class="sit-on"></i><i class="sit-off is"></i></span> offshore
+    </p>
+  </div>
+</section>
+
+<style>
+  .team-intro { row-gap: 32px; align-items: end; margin-bottom: clamp(48px, 7vw, 104px); }
+  .team-title { grid-column: 1 / span 8; max-width: 12ch; }
+  .team-body { grid-column: 9 / -1; max-width: 36ch; }
+  .team-body p:last-child { margin-bottom: 0; }
+
+  .roles { border-top: 1px solid var(--ink); }
+  .role {
+    display: grid; grid-template-columns: 1fr 4fr 4.5fr 2.5fr; column-gap: var(--col-gap);
+    align-items: baseline; padding-block: 20px 22px; border-bottom: 1px solid var(--rule);
+  }
+  .role-head { padding-block: 10px; border-bottom-color: var(--ink); }
+  .role-n { font-size: 12px; }
+  .role-name { font-size: clamp(1.5rem, 1rem + 1.5vw, 2.3rem); line-height: 1; letter-spacing: -0.015em; }
+  .role-sits { display: flex; align-items: center; gap: 12px; }
+
+  /* onshore above the line, offshore below: the same code as the charts */
+  .sit { display: inline-grid; gap: 2px; padding-block: 0; vertical-align: middle; position: relative; flex: none; }
+  .sit i { display: block; width: 12px; height: 12px; outline: 1px solid var(--rule); outline-offset: -1px; }
+  .sit-on { margin-bottom: 3px; }
+  .sit::after { content: ''; position: absolute; left: -3px; right: -3px; top: 50%; height: 1px; background: var(--ink); }
+  .sit-on.is { background: var(--ink); outline-color: var(--ink); }
+  .sit-off.is { background: repeating-linear-gradient(135deg, var(--ink) 0 1.5px, transparent 1.5px 4px); outline-color: var(--ink); }
+  .roles-key { display: flex; align-items: center; gap: 10px; margin: 16px 0 0; }
+  .roles-key .sit:not(:first-child) { margin-left: 18px; }
+
+  @media (max-width: 900px) {
+    .team-title, .team-body { grid-column: 1 / -1; }
+    .role { grid-template-columns: 5ch 1fr; row-gap: 8px; }
+    .role-head { display: none; }
+    .role-owns, .role-sits { grid-column: 2; }
+  }
+</style>

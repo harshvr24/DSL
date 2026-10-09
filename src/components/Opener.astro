@@ -1,0 +1,12 @@
+---
+// Section opener: number, mono title, right-hand note and the rule that draws in.
+interface Props { n: string; title: string; id?: string; heading?: boolean; }
+const { n, title, id, heading = true } = Astro.props;
+const Tag = heading ? 'h2' : 'span';
+---
+<div class="opener" data-opener>
+  <span class="opener-num"><b>{n}</b> / 10</span>
+  <Tag class="opener-title" id={id}>{title}</Tag>
+  <span class="opener-meta label"><slot /></span>
+  <span class="opener-rule" aria-hidden="true"></span>
+</div>

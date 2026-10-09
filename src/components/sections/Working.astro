@@ -1,0 +1,117 @@
+---
+import Opener from '../Opener.astro';
+import { agreements, note, access } from '../../content';
+---
+<section class="section" id="working" aria-labelledby="work-h">
+  <div class="wrap">
+    <Opener n="07" title="How we work" id="work-h">working agreements</Opener>
+    <p class="display work-title" data-split>Your accounts. Your repos. Your <em>rules.</em></p>
+
+    <div class="grid work-grid">
+      <ol class="agree">
+        {agreements.map((a) => (
+          <li class="agree-row" data-reveal>
+            <span class="agree-n mono">{a.n}</span>
+            <div>
+              <h3 class="agree-t">{a.t}</h3>
+              <p class="agree-d">{a.d}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <figure class="note" aria-labelledby="note-cap" data-reveal>
+        <div class="note-slip mono">
+          <div class="note-top">
+            <span>Hand-over note</span>
+            <span class="note-stamp">Example</span>
+          </div>
+          <p class="note-title"><b>{note.ticket}</b> {note.title}</p>
+          <dl class="note-meta">
+            <dt>From</dt><dd>{note.from}</dd>
+            <dt>To</dt><dd>{note.to}</dd>
+          </dl>
+          {note.blocks.map((b) => (
+            <div class="note-block">
+              <span class="note-k">{b.k}</span>
+              <ul>{b.items.map((i) => <li>{i}</li>)}</ul>
+            </div>
+          ))}
+        </div>
+        <figcaption id="note-cap" class="label">What a shift leaves behind. An example, not a real ticket.</figcaption>
+      </figure>
+    </div>
+
+    <div class="access">
+      <div class="access-head grid">
+        <h3 class="sub access-title" data-reveal>Access, on your terms</h3>
+        <p class="label access-note" data-reveal>You set the controls. We work inside them.</p>
+      </div>
+      <ul class="access-list">
+        {access.map((a, i) => (
+          <li data-reveal>
+            <span class="mono access-n">{String(i + 1).padStart(2, '0')}</span>
+            <h4 class="access-t">{a.t}</h4>
+            <p>{a.d}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .work-title { max-width: 14ch; margin-bottom: clamp(48px, 7vw, 104px); }
+  .work-grid { align-items: start; row-gap: 48px; }
+
+  .agree { grid-column: 1 / span 6; list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+  .agree-row { display: grid; grid-template-columns: 6ch minmax(0, 1fr); column-gap: var(--col-gap); padding-block: 24px 26px; border-bottom: 1px solid var(--rule); }
+  .agree-n { font-size: 12px; padding-top: 0.5em; }
+  .agree-t { font-size: clamp(1.5rem, 1rem + 1.4vw, 2.2rem); line-height: 1.02; letter-spacing: -0.015em; margin-bottom: 0.35em; }
+  .agree-d { margin: 0; max-width: 44ch; }
+
+  .note { grid-column: 8 / -1; margin: 0; position: sticky; top: calc(var(--header) + 32px); }
+  .note-slip {
+    background: rgb(255 255 255 / 0.82); border: 1px solid var(--ink);
+    box-shadow: 7px 7px 0 0 color-mix(in srgb, var(--ink) 10%, transparent);
+    padding: 0 18px 18px; font-size: 12.5px; line-height: 1.55; letter-spacing: 0.01em;
+  }
+  .note-top { display: flex; justify-content: space-between; align-items: center; margin-inline: -18px; padding: 9px 18px 8px; border-bottom: 1px solid var(--ink); text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; }
+  .note-stamp { border: 1px solid var(--accent); padding: 1px 7px 0; transform: rotate(-3deg); }
+  .note-title { font-family: var(--serif); font-size: 1.55rem; line-height: 1.08; letter-spacing: -0.01em; margin: 16px 0 12px; }
+  .note-title b { font-family: var(--mono); font-weight: 500; font-size: 12px; letter-spacing: 0.04em; display: block; margin-bottom: 6px; }
+  .note-meta { display: grid; grid-template-columns: 9ch 1fr; margin: 0 0 6px; padding-bottom: 10px; border-bottom: 1px dashed var(--rule); }
+  .note-meta dt { text-transform: uppercase; letter-spacing: 0.06em; font-size: 11px; color: var(--fg-muted); }
+  .note-meta dd { margin: 0; }
+  .note-block { display: grid; grid-template-columns: 9ch 1fr; padding-block: 9px; border-bottom: 1px dashed var(--rule); }
+  .note-block:last-child { border-bottom: 0; padding-bottom: 0; }
+  .note-k { text-transform: uppercase; letter-spacing: 0.06em; font-size: 11px; font-weight: 500; }
+  .note-block ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
+  .note-block li { padding-left: 14px; position: relative; }
+  .note-block li::before { content: '–'; position: absolute; left: 0; }
+  .note figcaption { margin-top: 18px; }
+
+  .access { margin-top: clamp(72px, 10vw, 144px); }
+  .access-head { align-items: end; padding-bottom: 18px; border-bottom: 1px solid var(--ink); row-gap: 8px; }
+  .access-title { grid-column: 1 / span 7; }
+  .access-note { grid-column: 8 / -1; text-align: right; margin: 0; }
+  .access-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .access-list li { padding: 22px clamp(14px, 2vw, 28px) 26px 0; border-bottom: 1px solid var(--rule); }
+  .access-list li + li { padding-left: clamp(14px, 2vw, 28px); border-left: 1px solid var(--rule); }
+  .access-n { font-size: 12px; display: block; margin-bottom: 18px; }
+  .access-t { font-weight: 400; font-size: clamp(1.35rem, 1rem + 1vw, 1.8rem); line-height: 1.05; letter-spacing: -0.01em; margin: 0 0 0.4em; }
+  .access-list p { margin: 0; font-size: 0.92em; }
+
+  @media (max-width: 1000px) {
+    .agree, .note { grid-column: 1 / -1; position: static; }
+    .note { max-width: 520px; }
+    .access-title, .access-note { grid-column: 1 / -1; text-align: left; }
+    .access-list { grid-template-columns: 1fr 1fr; }
+    .access-list li:nth-child(odd) { padding-left: 0; border-left: 0; }
+  }
+  @media (max-width: 560px) {
+    .access-list { grid-template-columns: 1fr; }
+    .access-list li, .access-list li + li { padding-left: 0; border-left: 0; }
+    .agree-row { grid-template-columns: 5ch minmax(0, 1fr); }
+  }
+</style>

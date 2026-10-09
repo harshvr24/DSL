@@ -1,0 +1,103 @@
+---
+import Opener from '../Opener.astro';
+import { ph, compare, shapes } from '../../content';
+---
+<section class="section" id="model" aria-labelledby="model-h">
+  <div class="wrap">
+    <Opener n="04" title="Onshore / Offshore" id="model-h">two models · one backlog</Opener>
+    <p class="display split-intro" data-split>Choose by the <em>work,</em> not the rate card.</p>
+
+    <div class="cmp" role="table" aria-label="Onshore and offshore compared">
+      <div class="cmp-row cmp-head" role="row">
+        <span class="cmp-k" role="columnheader"><span class="sr-only">Attribute</span></span>
+        <span class="cmp-on" role="columnheader" data-cmp="on"><span class="label"><b>A</b> · Day side</span><span class="cmp-title">Onshore</span></span>
+        <span class="cmp-off" role="columnheader" data-cmp="off"><span class="label"><b>B</b> · Night side</span><span class="cmp-title">Offshore</span></span>
+      </div>
+      {compare.map((r) => (
+        <div class="cmp-row" role="row">
+          <span class="cmp-k label" role="rowheader">{r.k}</span>
+          <span class="cmp-on" role="cell" data-cmp="on"><span set:html={ph(r.on)} /></span>
+          <span class="cmp-off" role="cell" data-cmp="off"><span set:html={ph(r.off)} /></span>
+        </div>
+      ))}
+    </div>
+
+    <div class="grid blend">
+      <h3 class="sub blend-h" data-reveal>Blended: one team across the line</h3>
+      <p class="blend-text" data-reveal>
+        Most teams end up blended. A lead on-site owns the architecture and the relationship; an offshore
+        squad takes tickets from the same board. Hand-over is written, not verbal: each shift closes with
+        a note on the ticket and the state of the pipeline.
+      </p>
+    </div>
+
+    <figure class="shapes" aria-labelledby="shapes-cap" data-shapes>
+      <div class="shapes-key label" aria-hidden="true"><span>Onshore ↑</span><span>Offshore ↓</span></div>
+      <div class="shapes-row">
+        {shapes.map((s) => (
+          <div class="shape">
+            <div class="shape-on" aria-hidden="true">{Array.from({ length: s.on }, () => <i data-unit></i>)}</div>
+            <div class="shape-off" aria-hidden="true">{Array.from({ length: s.off }, () => <i data-unit></i>)}</div>
+            <h4 class="shape-name">{s.name}</h4>
+            <p class="label shape-count">{s.on} onshore · {s.off} offshore</p>
+            <p class="shape-d">{s.d}</p>
+          </div>
+        ))}
+      </div>
+      <figcaption id="shapes-cap" class="label">Example team shapes. Yours is sized during scoping.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .split-intro { max-width: 14ch; margin-bottom: clamp(40px, 6vw, 80px); }
+
+  .cmp { display: grid; }
+  .cmp-row { display: grid; grid-template-columns: 3fr 4.5fr 4.5fr; column-gap: 0; }
+  .cmp-k { padding: 22px 20px 22px 0; border-top: 1px solid var(--rule); }
+  .cmp-on, .cmp-off { padding: 22px clamp(16px, 2vw, 32px); font-size: 1.05em; line-height: 1.35; border-top: 1px solid var(--rule); }
+  .cmp-on { background: color-mix(in srgb, var(--blue) 16%, rgb(255 255 255 / 0.6)); }
+  .cmp-off { background: color-mix(in srgb, var(--accent) 18%, rgb(255 255 255 / 0.6)); }
+  .cmp-head .cmp-k { border-top: 0; }
+  .cmp-head .cmp-on, .cmp-head .cmp-off { display: grid; gap: 6px; padding-top: 28px; }
+  .cmp-head .cmp-on { border-top: 2px solid var(--blue); }
+  .cmp-head .cmp-off { border-top: 2px solid var(--accent); }
+  .cmp-title { font-size: clamp(2rem, 1.2rem + 2.6vw, 3.6rem); line-height: 1; letter-spacing: -0.02em; }
+  .cmp-row:last-child .cmp-on, .cmp-row:last-child .cmp-off { padding-bottom: 36px; }
+
+  @media (max-width: 760px) {
+    /* still a split: two columns, with the row label running across like a horizon */
+    .cmp-row { grid-template-columns: 1fr 1fr; }
+    .cmp-k { grid-column: 1 / -1; padding: 16px 0 8px; }
+    .cmp-head .cmp-k { display: none; }
+    .cmp-on, .cmp-off { padding: 12px 12px 18px; font-size: 0.95em; border-top: 0; }
+    .cmp-head .cmp-on, .cmp-head .cmp-off { padding-top: 16px; }
+  }
+
+  .blend { margin-top: clamp(72px, 10vw, 144px); row-gap: 20px; align-items: start; }
+  .blend-h { grid-column: 1 / span 5; }
+  .blend-text { grid-column: 7 / span 5; margin: 0; max-width: 42ch; }
+
+  /* team shapes: one drawing, a single horizon with people above and below it */
+  .shapes { margin: clamp(40px, 5vw, 72px) 0 0; position: relative; }
+  .shapes-key { position: absolute; right: 0; top: 14px; display: grid; gap: 46px; text-align: right; font-size: 10px; }
+  .shapes-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .shape { display: grid; grid-template-rows: 44px 44px auto auto 1fr; padding-right: clamp(16px, 3vw, 48px); }
+  .shape-on, .shape-off { display: flex; gap: 8px; }
+  .shape-on { align-items: flex-end; padding-bottom: 8px; border-bottom: 2px solid var(--line); margin-right: calc(-1 * clamp(16px, 3vw, 48px)); }
+  .shape-off { align-items: flex-start; padding-top: 8px; }
+  .shape i { display: block; width: 24px; height: 24px; }
+  .shape-on i { background: var(--ink); }
+  .shape-off i { background: repeating-linear-gradient(135deg, var(--ink) 0 2px, transparent 2px 6px); outline: 1px solid var(--ink); outline-offset: -1px; }
+  .shape-name { font-weight: 400; font-size: clamp(1.5rem, 1rem + 1.4vw, 2.2rem); line-height: 1; letter-spacing: -0.015em; margin: 20px 0 6px; }
+  .shape-count { margin: 0 0 12px; }
+  .shape-d { margin: 0; font-size: 0.95em; max-width: 34ch; }
+  .shapes figcaption { margin-top: 28px; padding-top: 12px; border-top: 1px solid var(--rule); }
+
+  @media (max-width: 900px) {
+    .blend-h, .blend-text { grid-column: 1 / -1; }
+    .shapes-row { grid-template-columns: 1fr; row-gap: 36px; }
+    .shape, .shape-on { padding-right: 0; margin-right: 0; }
+    .shapes-key { display: none; }
+  }
+</style>

@@ -1,0 +1,71 @@
+---
+import Opener from '../Opener.astro';
+import { ph, steps } from '../../content';
+---
+<section class="section eng" id="engagement" aria-labelledby="eng-h">
+  <!-- on wide screens this block pins and vertical scroll moves the timeline sideways (motion.ts) -->
+  <div class="eng-pin" data-eng-pin>
+    <div class="wrap">
+      <Opener n="08" title="How engagement works" id="eng-h">first call → deployed</Opener>
+      <p class="display eng-intro" data-split>From first call to people on your <em>board.</em></p>
+    </div>
+
+    <div class="tl-scroller" tabindex="0" role="region" aria-label="Engagement timeline, six steps" data-tl-scroller>
+      <ol class="tl" data-tl>
+        {steps.map((s, i) => (
+          <li class="tl-step" data-tl-step>
+            <span class="tl-dur mono" set:html={ph(s.dur)} />
+            <span class="tl-node" aria-hidden="true"></span>
+            <span class="tl-t mono">{s.t} <span class="tl-of">/ {String(i + 1).padStart(2, '0')} of 06</span></span>
+            <h3 class="tl-name">{s.name}</h3>
+            <p class="tl-d">{s.d}</p>
+            <dl class="tl-io mono">
+              <dt>You bring</dt><dd>{s.bring}</dd>
+              <dt>You get</dt><dd>{s.get}</dd>
+            </dl>
+          </li>
+        ))}
+        <li class="tl-fill" aria-hidden="true" data-tl-fill></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .eng { padding-bottom: clamp(56px, 8vw, 112px); }
+  .eng-intro { max-width: 16ch; margin-bottom: clamp(40px, 6vh, 88px); }
+  :global(html.eng-pin) .eng-pin { padding-top: 20px; }
+  :global(html.eng-pin) .eng-intro { font-size: clamp(2.4rem, 1rem + 6.4vh, 5.6rem); margin-bottom: clamp(24px, 5vh, 64px); }
+  :global(html.eng-pin) .eng-pin :global(.opener) { margin-bottom: clamp(20px, 4vh, 56px); }
+
+  .tl-scroller { overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-left: var(--gutter); scrollbar-width: thin; scrollbar-color: var(--ink) transparent; }
+  :global(html.eng-pin) .tl-scroller { overflow: hidden; }
+  .tl {
+    --step: clamp(300px, 31vw, 460px);
+    list-style: none; margin: 0; padding: 0 var(--gutter) 12px; position: relative;
+    display: grid; grid-auto-flow: column; grid-auto-columns: var(--step); width: max-content;
+    will-change: transform;
+  }
+  /* the horizon line the steps hang from, and the part already travelled */
+  .tl::before { content: ''; position: absolute; left: var(--gutter); right: var(--gutter); top: 46px; height: 2px; background: var(--rule); }
+  .tl-fill { position: absolute; left: var(--gutter); right: var(--gutter); top: 46px; height: 2px; background: var(--ink); transform-origin: left center; }
+  :global(html.eng-pin) .tl-fill { transform: scaleX(0); }
+
+  .tl-step { position: relative; padding-right: clamp(20px, 3vw, 56px); scroll-snap-align: start; display: grid; grid-template-rows: 38px 18px auto auto auto 1fr; align-content: start; }
+  .tl-dur { font-size: 11.5px; align-self: end; padding-bottom: 6px; line-height: 1.3; }
+  .tl-node { width: 11px; height: 11px; background: var(--paper); border: 2px solid var(--ink); margin-top: 3px; position: relative; z-index: 1; transition: background-color 240ms ease, transform 240ms ease; }
+  .tl-step.is-done .tl-node { background: var(--ink); }
+  .tl-step:nth-last-child(2) .tl-node { border-color: var(--accent); }
+  .tl-step:nth-last-child(2).is-done .tl-node { background: var(--accent); transform: scale(1.35); }
+  .tl-t { font-size: 12px; margin-top: 16px; }
+  .tl-of { color: var(--fg-muted); margin-left: 6px; }
+  .tl-name { font-size: clamp(2.1rem, 1.2rem + 2.6vw, 3.8rem); margin: 6px 0 12px; letter-spacing: -0.02em; }
+  .tl-d { margin: 0 0 18px; max-width: 30ch; }
+  .tl-io { margin: 0; display: grid; grid-template-columns: 10ch minmax(0, 1fr); row-gap: 8px; font-size: 12.5px; line-height: 1.5; padding-top: 12px; border-top: 1px solid var(--rule); max-width: 38ch; align-content: start; }
+  .tl-io dt { text-transform: uppercase; letter-spacing: 0.06em; font-size: 11px; color: var(--fg-muted); padding-top: 1px; }
+  .tl-io dd { margin: 0; }
+
+  @media (max-width: 700px) {
+    .tl { --step: 80vw; }
+  }
+</style>

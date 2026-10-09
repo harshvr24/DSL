@@ -1,0 +1,65 @@
+---
+import '../styles/global.css';
+import { company } from '../config';
+
+interface Props { title: string; description: string; }
+const { title, description } = Astro.props;
+const site = Astro.site?.toString().replace(/\/$/, '') ?? company.url;
+const canonical = site + '/';
+const ogImage = site + '/og.png';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: company.legalName,
+  alternateName: company.shortName,
+  url: canonical,
+  logo: site + '/favicon-512.png',
+  email: company.email,
+  telephone: company.phone,
+  address: { '@type': 'PostalAddress', streetAddress: company.address, addressCountry: 'IN' },
+  identifier: { '@type': 'PropertyValue', propertyID: 'CIN', value: company.cin },
+  knowsAbout: ['Amazon Web Services', 'Cloud migration', 'DevOps', 'Cloud security', 'Data engineering'],
+};
+---
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#FFFFFF" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={company.shortName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/ibm-plex-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- `js` enables motion styling; `no-motion` is a failsafe so nothing stays hidden if the motion script never starts -->
+    <script is:inline>
+      (function (h) {
+        h.classList.add('js');
+        setTimeout(function () { if (!h.classList.contains('motion-ready')) h.classList.add('no-motion'); }, 4000);
+      })(document.documentElement);
+    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <canvas class="sky" data-sky aria-hidden="true"></canvas>
+    <slot />
+  </body>
+</html>

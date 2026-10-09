@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import What from '../components/sections/What.astro';
+import FollowSun from '../components/sections/FollowSun.astro';
+import Model from '../components/sections/Model.astro';
+import Team from '../components/sections/Team.astro';
+import Capabilities from '../components/sections/Capabilities.astro';
+import Working from '../components/sections/Working.astro';
+import Engagement from '../components/sections/Engagement.astro';
+import Faq from '../components/sections/Faq.astro';
+import Contact from '../components/sections/Contact.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'DSL Hyperscale Advisory: AWS consultants, onshore and offshore';
+const description =
+  'AWS Consulting Partner. Cloud engineers on-site with your team and a delivery team in Delhi on the same backlog: migration, architecture, DevOps, data, security, cost and managed support.';
+---
+<Base title={title} description={description}>
+  <Header />
+  <main id="main">
+    <Hero />
+    <What />
+    <FollowSun />
+    <Model />
+    <Team />
+    <Capabilities />
+    <Working />
+    <Engagement />
+    <Faq />
+    <Contact />
+  </main>
+  <Footer />
+</Base>
+
+<script>
+  import '../scripts/motion';
+</script>

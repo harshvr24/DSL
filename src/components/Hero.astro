@@ -1,0 +1,197 @@
+---
+import { fallbackOnshore, company } from '../config';
+---
+<section class="hero" id="top" aria-labelledby="hero-title" data-hero>
+  <h1 id="hero-title" class="sr-only">Your team logs off. The work doesn’t. AWS consultants onshore and offshore.</h1>
+
+  <!-- ABOVE THE HORIZON / ONSHORE -->
+  <div class="hero-meta hero-meta--top wrap" aria-hidden="true" data-hero-fade>
+    <span class="label">Onshore <b>·</b> client site</span>
+    <span class="label" data-region>region —</span>
+    <span class="label hide-sm" data-utc-client>UTC —</span>
+  </div>
+
+  <div class="hero-row hero-row--day wrap grid">
+    <p class="hero-line hero-line--day" aria-hidden="true" data-hero-line="up"><span class="hero-mask"><span class="hero-rise">Your team <span class="nowrap">logs off.</span></span></span></p>
+    <div class="clock clock--day" data-hero-fade data-clock="client" data-fallback-zone={fallbackOnshore.timeZone} data-fallback-label={fallbackOnshore.label}>
+      <span class="label clock-label"><b data-clock-name>Your time</b> <span data-clock-zone></span></span>
+      <time class="clock-time" data-clock-time>--:--<span class="clock-sec">:--</span></time>
+    </div>
+  </div>
+
+  <div class="horizon" aria-hidden="true" data-horizon>
+    <span class="horizon-line"></span>
+    <span class="horizon-label label">0° — horizon</span>
+  </div>
+
+  <!-- BELOW THE HORIZON / OFFSHORE -->
+  <div class="hero-row hero-row--night wrap grid">
+    <p class="hero-line hero-line--night" aria-hidden="true" data-hero-line="down"><span class="hero-mask"><span class="hero-fall">The <em>work</em> <span class="nowrap">doesn’t.</span></span></span></p>
+    <div class="clock clock--night" data-hero-fade data-clock="ist">
+      <span class="label clock-label"><b>India</b> <span>IST · UTC+05:30</span></span>
+      <time class="clock-time" data-clock-time>--:--<span class="clock-sec">:--</span></time>
+      <span class="label clock-gap" data-clock-gap></span>
+    </div>
+  </div>
+
+  <div class="hero-foot wrap grid" data-hero-fade>
+    <p class="hero-copy">
+      AWS consultants on-site with your engineers, and a delivery team in India that picks up the
+      same backlog while you sleep. One board, two time zones.
+    </p>
+    <a class="btn btn-ink hero-cta" href="#contact">Talk to an engineer <span class="arrow" aria-hidden="true">→</span></a>
+  </div>
+
+  <div class="hero-meta hero-meta--bottom wrap" aria-hidden="true" data-hero-fade>
+    <span class="label">Offshore <b>·</b> {company.offshoreCity}</span>
+    <span class="label">ap-south-1 · ap-south-2</span>
+    <span class="label hide-sm">Scroll <b>↓</b> through the cloud</span>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    grid-template-rows: auto 1.5fr auto auto auto 0.5fr auto;
+    grid-template-areas: 'mt' 'day' 'hz' 'night' 'foot' 'sp' 'mb';
+    overflow: clip;
+    padding-top: var(--header);
+  }
+  /* static light, used until (or instead of) the live sky */
+  .hero::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background:
+      radial-gradient(ellipse 58% 46% at 38% 30%, color-mix(in srgb, var(--blue) 62%, transparent) 0%, color-mix(in srgb, var(--blue) 26%, transparent) 48%, transparent 78%),
+      radial-gradient(ellipse 60% 48% at 60% 78%, color-mix(in srgb, var(--accent) 64%, transparent) 0%, color-mix(in srgb, var(--accent) 26%, transparent) 48%, transparent 78%);
+    transition: opacity 1400ms ease;
+  }
+  :global(html.sky-on) .hero::before { opacity: 0; }
+
+  .hero > * { grid-column: 1; }
+  .hero-meta { display: flex; justify-content: space-between; gap: 16px; padding-block: 18px; }
+  .hero-meta--top { grid-area: mt; }
+  .hero-meta--bottom { grid-area: mb; border-top: 1px solid var(--rule); }
+
+  .hero-row { position: relative; }
+  .hero-row--day { grid-area: day; align-items: end; align-content: end; padding-bottom: clamp(10px, 1.4vw, 22px); }
+  .hero-row--night { grid-area: night; align-items: start; padding-top: clamp(6px, 1vw, 16px); }
+
+  .hero-line {
+    grid-column: 1 / span 9;
+    margin: 0;
+    font-size: clamp(3.4rem, 1rem + 8.6vw, 10.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+  }
+  .nowrap { white-space: nowrap; }
+
+  /* intro: both lines come out of the horizon. Pure CSS so first paint never waits on script. */
+  .hero-mask { display: block; overflow: clip; padding-block: 0.14em; margin-block: -0.14em; }
+  .hero-rise, .hero-fall { display: block; will-change: transform; }
+  .hero-rise { animation: rise 1000ms cubic-bezier(.16,.84,.24,1) backwards; }
+  .hero-fall { animation: fall 1000ms cubic-bezier(.16,.84,.24,1) 120ms backwards; }
+  @keyframes rise { from { transform: translateY(96%); } }
+  @keyframes fall { from { transform: translateY(-96%); } }
+
+  .clock { grid-column: 10 / -1; display: grid; gap: 4px; justify-self: end; text-align: right; animation: fade 900ms ease 900ms backwards; }
+  .clock--day { padding-bottom: 0.4em; }
+  .clock--night { padding-top: 0.6em; }
+  .clock-label b { margin-right: 6px; }
+  .clock-time {
+    font-family: var(--mono); font-weight: 400; font-size: clamp(1.6rem, 0.9rem + 1.8vw, 2.8rem);
+    letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums;
+  }
+  .clock :global(.clock-sec) { opacity: 0.6; }
+  .clock-gap { color: var(--ink); }
+  :global(html:not(.js)) .clock { display: none; }   /* clocks need script; hide the empty frames without it */
+  @keyframes fade { from { opacity: 0; } }
+
+  /* horizon */
+  .horizon { grid-area: hz; position: relative; height: 2px; }
+  .horizon-line {
+    position: absolute; inset: 0; background: var(--line);
+    transform-origin: left center;
+    animation: draw 1400ms cubic-bezier(.65,0,.2,1) backwards;
+  }
+  .horizon-label { position: absolute; left: calc(100% * 7 / 12); top: -22px; animation: fade 900ms ease 1100ms backwards; }
+  @keyframes draw { from { transform: scaleX(0); } }
+
+  .hero-foot { grid-area: foot; padding-top: clamp(28px, 4vw, 56px); align-items: end; row-gap: 28px; animation: fade 900ms ease 1000ms backwards; }
+  .hero-copy { grid-column: 1 / span 6; margin: 0; font-size: clamp(1.2rem, 0.9rem + 0.8vw, 1.6rem); line-height: 1.3; max-width: 34ch; }
+  .hero-cta { grid-column: 9 / -1; justify-self: end; }
+
+  @media (max-width: 900px) {
+    .hero-line { grid-column: 1 / -1; }
+    .hero-row--day { row-gap: 0; }
+    .clock { grid-column: 1 / -1; justify-self: start; text-align: left; grid-row: 2; }
+    .clock--day { grid-row: 1; padding: 0 0 18px; }
+    .clock--night { padding: 18px 0 0; }
+    .hero-copy { grid-column: 1 / -1; }
+    .hero-cta { grid-column: 1 / -1; justify-self: start; }
+  }
+  @media (max-width: 600px) {
+    .hide-sm, .horizon-label { display: none; }
+    .hero-line { font-size: clamp(3rem, 15.5vw, 4.6rem); }
+    /* clocks become a compact pair hugging the horizon */
+    .clock { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .clock-time { font-size: 1.5rem; order: -1; }
+    .clock-gap { flex-basis: 100%; }
+  }
+</style>
+
+<script>
+  import { IST, offsetMin, fmtOffset, cityOf, primaryOnshore } from '../scripts/time';
+
+  const regionByZone: Record<string, string> = {
+    'Europe/London': 'eu-west-2', 'Europe/Dublin': 'eu-west-1', 'Europe/Paris': 'eu-west-3',
+    'Europe/Berlin': 'eu-central-1', 'Europe/Amsterdam': 'eu-central-1', 'Europe/Zurich': 'eu-central-2',
+    'Europe/Stockholm': 'eu-north-1', 'Europe/Madrid': 'eu-south-2', 'Europe/Rome': 'eu-south-1',
+    'America/New_York': 'us-east-1', 'America/Toronto': 'ca-central-1', 'America/Chicago': 'us-east-2',
+    'America/Denver': 'us-west-2', 'America/Los_Angeles': 'us-west-1', 'America/Vancouver': 'ca-west-1', 'America/Sao_Paulo': 'sa-east-1',
+    'Asia/Dubai': 'me-central-1', 'Asia/Riyadh': 'me-south-1', 'Asia/Singapore': 'ap-southeast-1',
+    'Asia/Tokyo': 'ap-northeast-1', 'Asia/Seoul': 'ap-northeast-2', 'Asia/Hong_Kong': 'ap-east-1',
+    'Australia/Sydney': 'ap-southeast-2', 'Australia/Melbourne': 'ap-southeast-4', 'Pacific/Auckland': 'ap-southeast-6',
+    'Africa/Johannesburg': 'af-south-1', 'Asia/Jakarta': 'ap-southeast-3', 'Asia/Kolkata': 'ap-south-1',
+  };
+
+  const clientEl = document.querySelector<HTMLElement>('[data-clock="client"]');
+  const istEl = document.querySelector<HTMLElement>('[data-clock="ist"]');
+
+  if (clientEl && istEl) {
+    const { zone, name } = primaryOnshore(clientEl.dataset.fallbackZone || 'America/New_York', clientEl.dataset.fallbackLabel || 'Client');
+    const now = new Date();
+    const cOff = offsetMin(zone, now);
+    const iOff = offsetMin(IST, now);
+
+    clientEl.querySelector('[data-clock-name]')!.textContent = name;
+    clientEl.querySelector('[data-clock-zone]')!.textContent = `${cityOf(zone)} · ${fmtOffset(cOff)}`;
+    const regionEl = document.querySelector('[data-region]');
+    if (regionEl) regionEl.textContent = regionByZone[zone] ? `→ ${regionByZone[zone]}` : zone;
+    const utcEl = document.querySelector('[data-utc-client]');
+    if (utcEl) utcEl.textContent = fmtOffset(cOff);
+
+    const diff = iOff - cOff;
+    const gapEl = istEl.querySelector('[data-clock-gap]')!;
+    if (diff === 0) gapEl.textContent = 'same time as you';
+    else {
+      const a = Math.abs(diff), h = Math.floor(a / 60), m = a % 60;
+      gapEl.textContent = `${h}h${m ? ` ${String(m).padStart(2, '0')}m` : ''} ${diff > 0 ? 'ahead of' : 'behind'} you`;
+    }
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fmt = (tz: string) => new Intl.DateTimeFormat('en-GB', { timeZone: tz, hourCycle: 'h23', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const fc = fmt(zone), fi = fmt(IST);
+    const paint = (el: HTMLElement, f: Intl.DateTimeFormat, d: Date) => {
+      const [hh, mm, ss] = f.format(d).split(':');
+      const t = el.querySelector('[data-clock-time]')!;
+      t.setAttribute('datetime', d.toISOString());
+      t.innerHTML = reduce ? `${hh}:${mm}` : `${hh}:${mm}<span class="clock-sec">:${ss}</span>`;
+    };
+    const tick = () => { const d = new Date(); paint(clientEl, fc, d); paint(istEl, fi, d); };
+    tick();
+    const step = reduce ? 15000 : 1000;
+    setTimeout(() => { tick(); setInterval(tick, step); }, step - (Date.now() % step));
+  }
+</script>

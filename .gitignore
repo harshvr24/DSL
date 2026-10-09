@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.astro/
+.env
+
+# design reference screenshot (another site), not part of this project
+image.png

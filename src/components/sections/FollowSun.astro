@@ -1,0 +1,157 @@
+---
+import Opener from '../Opener.astro';
+import { places } from '../../content';
+import { fallbackOnshore } from '../../config';
+---
+<section class="section sun" id="sun" aria-labelledby="sun-h" data-sun data-fallback-zone={fallbackOnshore.timeZone} data-fallback-label={fallbackOnshore.label}>
+  <div class="wrap">
+    <Opener n="03" title="Follow the sun" id="sun-h">live · computed for today</Opener>
+    <div class="grid sun-intro">
+      <p class="display sun-title" data-split>One backlog, <em>round</em> the clock.</p>
+      <p class="sun-lede" data-reveal>
+        The curve on the globe is today’s real dusk line. Scroll, and the Earth turns through 24 hours
+        in your time zone: who is at work, who is asleep, and where the hand-over note waits in between.
+      </p>
+    </div>
+  </div>
+
+  <div class="sun-track" data-sun-track>
+    <div class="sun-stage" data-sun-stage>
+      <div class="wrap grid sun-grid">
+        <div class="sun-panel">
+          <p class="label sun-clock"><span data-sun-zone>Your time</span> <b data-sun-time>--:--</b></p>
+          <h3 class="sun-state-t" data-sun-state-t>Follow the sun</h3>
+          <p class="sun-state-d" data-sun-state-d>One backlog, handed between your site and Delhi.</p>
+
+          <table class="sun-read">
+            <caption class="sr-only">Local time and working status at each location</caption>
+            <thead class="sr-only"><tr><th scope="col">Location</th><th scope="col">Local time</th><th scope="col">Status</th></tr></thead>
+            <tbody>
+              {places.map((p) => (
+                <tr data-place={p.id}>
+                  <th scope="row"><span class="sun-dot" aria-hidden="true"></span>{p.name}{p.sub && <span class="sun-sub"> · {p.sub}</span>}</th>
+                  <td class="mono" data-place-time>--:--</td>
+                  <td class="label" data-place-status>—</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="sun-globe" data-globe>
+          <canvas data-globe-canvas aria-hidden="true"></canvas>
+          <div class="sun-labels" aria-hidden="true">
+            {places.map((p) => (
+              <span class="g-label" data-label={p.id}><b>{p.name}</b><span data-label-time>--:--</span></span>
+            ))}
+            <span class="g-note" data-label="sun">Sun</span>
+            <span class="g-note" data-label="dusk">Dusk line</span>
+          </div>
+        </div>
+
+        <figure class="day" data-day>
+          <div class="day-scale mono" aria-hidden="true">
+            {Array.from({ length: 13 }, (_, i) => <span style={`left:${(i * 2 / 24) * 100}%`}>{String(i * 2).padStart(2, '0')}</span>)}
+          </div>
+          <div class="day-body">
+            <div class="day-lane day-lane--on" aria-hidden="true"><span class="day-tag mono">Onshore</span><span class="day-bar" data-bar="on"></span></div>
+            <div class="day-axis" aria-hidden="true"><span class="day-overlap" data-overlap></span></div>
+            <div class="day-lane day-lane--off" aria-hidden="true"><span class="day-tag mono">Delhi</span><span class="day-bar" data-bar="off"></span><span class="day-bar" data-bar="off2"></span></div>
+            <span class="day-now" data-day-now aria-hidden="true"><b class="mono" data-day-now-label>00:00</b></span>
+            <input class="day-range" type="range" min="0" max="1439" step="5" value="0" aria-label="Time of day in your time zone" data-day-range />
+          </div>
+          <figcaption class="label day-cap" data-day-cap>
+            24 hours in your time zone. Above the line: onshore, 09:00–18:00 local. Below: Delhi, 09:30–18:30 IST.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sun { padding-bottom: clamp(40px, 6vw, 88px); }
+  .sun-intro { row-gap: 28px; align-items: end; margin-bottom: clamp(24px, 4vw, 56px); }
+  .sun-title { grid-column: 1 / span 7; }
+  .sun-lede { grid-column: 8 / -1; margin: 0; max-width: 38ch; }
+
+  .sun-stage { padding-block: 24px; }
+  /* set by script when the stage fits the viewport and motion is allowed */
+  :global(html.sun-pin) .sun-track { height: 340vh; }
+  :global(html.sun-pin) .sun-stage { position: sticky; top: var(--header); height: calc(100svh - var(--header)); display: grid; align-content: center; padding-block: 12px; }
+
+  .sun-grid { align-items: center; row-gap: clamp(14px, 2.6vh, 30px); }
+  .sun-panel { grid-column: 1 / span 5; }
+  .sun-clock { margin: 0 0 12px; display: flex; gap: 12px; align-items: baseline; }
+  .sun-clock b { font-size: 20px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+  .sun-state-t { font-size: clamp(2rem, 1.2rem + 2.6vw, 3.6rem); line-height: 0.98; letter-spacing: -0.02em; margin-bottom: 0.3em; }
+  .sun-state-d { margin: 0 0 clamp(16px, 3vh, 32px); max-width: 36ch; min-height: 4.3em; }
+
+  .sun-read { width: 100%; border-collapse: collapse; border-top: 1px solid var(--ink); }
+  .sun-read th, .sun-read td { text-align: left; font-weight: 400; padding: 9px 0; border-bottom: 1px solid var(--rule); vertical-align: baseline; }
+  .sun-read th { font-size: 1.02em; line-height: 1.2; }
+  .sun-sub { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--fg-muted); white-space: nowrap; }
+  .sun-read td { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; padding-left: 14px; }
+  .sun-read td.mono { font-size: 14px; letter-spacing: 0; }
+  .sun-read td.label { width: 11ch; }
+  .sun-dot { display: inline-block; width: 8px; height: 8px; border: 1.5px solid var(--ink); margin-right: 10px; transform: translateY(-1px); transition: background-color 200ms ease; }
+  .sun-read tr[data-working='true'] .sun-dot { background: var(--ink); }
+  .sun-read tr[data-working='true'] td.label { color: var(--ink); font-weight: 500; }
+
+  .sun-globe { grid-column: 7 / -1; position: relative; aspect-ratio: 1; width: min(100%, 58vh); min-width: 240px; justify-self: center; }
+  .sun-globe canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .sun-labels { position: absolute; inset: 0; pointer-events: none; }
+  .g-label, .g-note {
+    position: absolute; left: 0; top: 0; white-space: nowrap; will-change: transform;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; line-height: 1.35;
+    transition: opacity 240ms ease;
+  }
+  .g-label { display: grid; padding: 4px 7px 3px; background: rgb(255 255 255 / 0.78); border: 1px solid var(--ink); }
+  .g-label b { font-weight: 500; }
+  .g-label span { font-variant-numeric: tabular-nums; }
+  .g-label[data-working='true'] { background: var(--ink); color: var(--paper); }
+  .g-label[data-far='true'] { opacity: 0.42; }
+  .g-note { color: var(--fg-muted); }
+
+  /* 24-hour chart; doubles as the scrubber */
+  .day { grid-column: 1 / -1; margin: 0; position: relative; }
+  .day-scale { position: relative; height: 18px; font-size: 11px; color: var(--fg-muted); border-bottom: 1px solid var(--rule); }
+  .day-scale span { position: absolute; top: 0; transform: translateX(-50%); }
+  .day-scale span:first-child { transform: none; }
+  .day-scale span:last-child { transform: translateX(-100%); }
+  .day-body { position: relative; padding-top: 8px; }
+  .day-lane { position: relative; height: 26px; background-image: repeating-linear-gradient(to right, var(--rule-faint) 0 1px, transparent 1px calc(100% / 24)); }
+  .day-tag { position: absolute; left: 6px; top: 50%; transform: translateY(-50%); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-muted); z-index: 1; mix-blend-mode: multiply; }
+  .day-bar { position: absolute; top: 5px; bottom: 5px; left: 37.5%; width: 37.5%; }
+  .day-lane--on .day-bar { background: var(--ink); }
+  .day-lane--off .day-bar { background: repeating-linear-gradient(135deg, var(--ink) 0 2px, transparent 2px 6px); outline: 1px solid var(--ink); outline-offset: -1px; }
+  .day-lane--off [data-bar='off'] { left: 0; width: 37.5%; }
+  .day-lane--off [data-bar='off2'] { display: none; }
+  .day-axis { position: relative; height: 2px; background: var(--line); }
+  .day-overlap { position: absolute; top: -26px; bottom: -26px; left: 0; width: 0; border-inline: 1px solid var(--accent); background: color-mix(in oklab, var(--accent) 16%, transparent); }
+  .day-now { position: absolute; top: 0; bottom: -6px; left: 0; width: 2px; margin-left: -1px; background: var(--accent); pointer-events: none; }
+  .day-now b { position: absolute; bottom: 100%; left: 50%; transform: translate(-50%, -22px); background: var(--ink); color: var(--paper); padding: 2px 6px; font-weight: 400; font-size: 11px; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+  .day-range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; }
+  .day-body:has(.day-range:focus-visible) { outline: 2px solid var(--ink); outline-offset: 4px; }
+  .day-cap { display: block; margin-top: 12px; text-transform: none; letter-spacing: 0.02em; }
+
+  @media (max-width: 900px) {
+    .sun-title, .sun-lede { grid-column: 1 / -1; }
+    .sun-globe { grid-column: 1 / -1; order: -1; width: min(84vw, 35vh); }
+    .sun-panel { grid-column: 1 / -1; }
+    .sun-state-d { min-height: 4.4em; margin-bottom: 10px; font-size: 0.94em; }
+    .sun-state-t { font-size: 1.9rem; }
+    .sun-clock { margin-bottom: 6px; }
+    .sun-read th, .sun-read td { padding: 6px 0; }
+    .sun-sub { display: none; }
+    /* small globe: callouts carry the name only; times are in the table below */
+    .g-label { font-size: 10px; padding: 3px 5px 2px; }
+    .g-label span { display: none; }
+    .day-cap { display: none; }
+    :global(html:not(.sun-pin)) .day-cap { display: block; }
+  }
+</style>
+
+<script>
+  import '../../scripts/sun';
+</script>

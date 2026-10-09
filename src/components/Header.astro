@@ -1,0 +1,162 @@
+---
+import { sections } from '../content';
+const links = sections.filter((s) => s.nav);
+---
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="DSL Hyperscale Advisory, back to top">
+      <span class="brand-mark" aria-hidden="true">DSL</span>
+      <span class="brand-name" aria-hidden="true">Hyperscale Advisory</span>
+    </a>
+    <nav aria-label="Sections">
+      <ul class="nav">
+        {links.map((l) => (
+          <li><a href={`#${l.id}`} data-nav={l.id}><span>{l.n}</span>{l.t}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <button class="index-btn" type="button" aria-haspopup="dialog" aria-controls="index" data-index-open>
+      <span class="index-ico" aria-hidden="true"><i></i><i></i></span>Index
+    </button>
+  </div>
+  <div class="track" aria-hidden="true">
+    <span class="track-fill"></span>
+    <span class="track-sun"></span>
+  </div>
+</header>
+
+<dialog class="index" id="index" aria-label="Contents" data-index>
+  <div class="index-in wrap">
+    <div class="index-top">
+      <span class="label">Index <b>·</b> 10 sections</span>
+      <button class="index-close" type="button" data-index-close>Close <span aria-hidden="true">×</span></button>
+    </div>
+    <ol class="index-list">
+      {sections.map((s) => (
+        <li>
+          <a href={`#${s.id}`} data-index-link>
+            <span class="index-n mono">{s.n}</span>
+            <span class="index-t">{s.t}</span>
+            <span class="index-note label">{s.note}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </div>
+</dialog>
+
+<style>
+  .site-header {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    background: rgb(255 255 255 / 0.66);
+    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  }
+  .site-header .wrap { display: flex; align-items: center; gap: clamp(16px, 2vw, 28px); height: 56px; }
+  .brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; margin-right: auto; }
+  .brand-mark { font-family: var(--serif); font-size: 28px; line-height: 1; letter-spacing: -0.02em; }
+  .brand-name { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-muted); }
+  .nav { display: flex; gap: clamp(14px, 1.8vw, 26px); list-style: none; margin: 0; padding: 0; }
+  .nav a {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-decoration: none;
+    color: var(--fg-muted); padding: 8px 0; display: inline-block; position: relative;
+  }
+  .nav a span { color: var(--fg); margin-right: 6px; }
+  .nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 2px; height: 1px; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform 260ms ease; }
+  .nav a:hover, .nav a[aria-current='true'] { color: var(--fg); }
+  .nav a:hover::after, .nav a[aria-current='true']::after { transform: scaleX(1); }
+
+  .index-btn {
+    display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    background: var(--ink); color: var(--paper); border: 1px solid var(--ink); padding: 9px 14px 8px;
+    transition: background-color 160ms ease, color 160ms ease;
+  }
+  .index-btn:hover { background: transparent; color: var(--ink); }
+  .index-ico { display: grid; gap: 4px; width: 14px; }
+  .index-ico i { display: block; height: 1px; background: currentColor; }
+  .index-ico i:last-child { width: 60%; }
+
+  /* the travelling horizon: header baseline + sun marker tracking scroll */
+  .track { position: relative; height: 1px; background: var(--rule); }
+  .track-fill { position: absolute; inset: 0 auto 0 0; width: 100%; background: var(--accent); transform-origin: left; transform: scaleX(var(--p, 0)); }
+  .track-sun { position: absolute; top: -3px; left: 0; width: 7px; height: 7px; background: var(--accent); transform: translateX(calc(var(--p, 0) * (100vw - 7px))); }
+
+  @media (max-width: 1080px) {
+    .nav { display: none; }
+  }
+  @media (max-width: 520px) {
+    .brand-name { display: none; }
+  }
+
+  /* ---- Index: full-screen contents ---- */
+  .index {
+    width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+    background: rgb(255 255 255 / 0.8); color: var(--ink);
+    -webkit-backdrop-filter: blur(28px) saturate(1.2); backdrop-filter: blur(28px) saturate(1.2);
+    overflow-y: auto; overscroll-behavior: contain;
+  }
+  .index::backdrop { background: transparent; }
+  .index[open] { animation: index-in 420ms cubic-bezier(.2,.7,.2,1); }
+  @keyframes index-in { from { opacity: 0; transform: translateY(-12px); } }
+  .index-in { padding-block: 0 48px; }
+  .index-top { display: flex; justify-content: space-between; align-items: center; height: 57px; border-bottom: 1px solid var(--ink); }
+  .index-close {
+    cursor: pointer; background: none; border: 0; padding: 10px 0;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .index-close span { font-size: 16px; margin-left: 6px; }
+  .index-list { list-style: none; margin: 0; padding: 0; }
+  .index-list a {
+    display: grid; grid-template-columns: 4ch minmax(0, 1fr) auto; align-items: baseline; column-gap: clamp(12px, 3vw, 40px);
+    padding: clamp(8px, 1.3vh, 16px) 0; border-bottom: 1px solid var(--rule); text-decoration: none; position: relative;
+  }
+  .index-t { font-size: clamp(1.9rem, 1rem + 4.4vh, 4.2rem); line-height: 1; letter-spacing: -0.02em; transition: transform 320ms cubic-bezier(.2,.7,.2,1); }
+  .index-list a:hover .index-t, .index-list a:focus-visible .index-t { transform: translateX(14px); font-style: italic; }
+  .index-list a::after { content: ''; position: absolute; left: 0; bottom: -1px; height: 1px; width: 100%; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform 420ms ease; }
+  .index-list a:hover::after, .index-list a:focus-visible::after { transform: scaleX(1); }
+  .index-note { text-align: right; }
+  .index[open] .index-list li { animation: index-row 520ms cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 34ms + 80ms); }
+  @keyframes index-row { from { opacity: 0; transform: translateY(14px); } }
+  @media (max-width: 700px) {
+    .index-note { display: none; }
+    .index-list a { grid-template-columns: 4ch minmax(0, 1fr); }
+  }
+</style>
+
+<script>
+  // ---- nav state + horizon track ----
+  const sections = Array.from(document.querySelectorAll<HTMLElement>('main > section'));
+  const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-nav]'));
+  const header = document.querySelector<HTMLElement>('[data-header]');
+
+  const update = () => {
+    const mid = window.innerHeight * 0.45;
+    let current: HTMLElement | null = null;
+    for (const s of sections) {
+      const r = s.getBoundingClientRect();
+      if (r.top <= mid && r.bottom > mid) { current = s; break; }
+    }
+    const id = current?.id;
+    navLinks.forEach((a) => a.setAttribute('aria-current', String(a.dataset.nav === id)));
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    header?.style.setProperty('--p', String(max > 0 ? Math.min(1, window.scrollY / max) : 0));
+  };
+  let raf = 0;
+  const onScroll = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; update(); }); };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+
+  // ---- index overlay (native <dialog>: focus trap and Esc come for free) ----
+  const dialog = document.querySelector<HTMLDialogElement>('[data-index]');
+  const openBtn = document.querySelector<HTMLButtonElement>('[data-index-open]');
+  if (dialog && openBtn && typeof dialog.showModal === 'function') {
+    dialog.querySelectorAll<HTMLElement>('.index-list li').forEach((li, i) => li.style.setProperty('--i', String(i)));
+    openBtn.addEventListener('click', () => dialog.showModal());
+    dialog.querySelector('[data-index-close]')?.addEventListener('click', () => dialog.close());
+    dialog.querySelectorAll('[data-index-link]').forEach((a) => a.addEventListener('click', () => dialog.close()));
+  } else if (openBtn) {
+    openBtn.hidden = true;
+  }
+</script>

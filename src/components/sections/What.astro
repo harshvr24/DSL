@@ -1,0 +1,86 @@
+---
+import Opener from '../Opener.astro';
+import { company } from '../../config';
+import { ph, ways } from '../../content';
+---
+<section class="section" id="what" aria-labelledby="what-h">
+  <div class="wrap">
+    <Opener n="02" title="What we do" id="what-h">AWS Consulting Partner · <Fragment set:html={ph(company.partnerTier)} /></Opener>
+
+    <div class="grid what">
+      <p class="display what-statement" data-split>
+        We put AWS engineers into your team. Some sit <em>with</em> you; the rest work from India on the same backlog.
+      </p>
+      <div class="what-body" data-reveal>
+        <p>
+          They work in your accounts, your repositories and your change process. Migration, platform, data,
+          security and cost work, done by people who have run production on AWS. You get them in
+          two to three weeks, not after a hiring cycle.
+        </p>
+      </div>
+      <aside class="badge-slot" aria-label="AWS Partner badge" data-reveal>
+        <span class="label">Slot · AWS Partner badge</span>
+        <span class="badge-slot-box mono">[PLACEHOLDER: official AWS Partner badge from Partner Central]</span>
+      </aside>
+    </div>
+
+    <div class="ways-head grid">
+      <h3 class="sub ways-title" data-reveal>Three ways to engage</h3>
+      <p class="label ways-note" data-reveal>Pick one, or start with A and grow into B.</p>
+    </div>
+    <ol class="ways">
+      {ways.map((w) => (
+        <li class="way grid" data-reveal>
+          <span class="way-k mono" aria-hidden="true">{w.k}</span>
+          <h4 class="way-name">{w.name}</h4>
+          <div class="way-d">
+            <p>{w.d}</p>
+            <p class="label way-fit"><b>Fits when</b> {w.fit}</p>
+          </div>
+          <ul class="way-inc mono">
+            {w.inc.map((i) => <li>{i}</li>)}
+          </ul>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .what { row-gap: 40px; align-items: start; }
+  .what-statement { grid-column: 1 / span 10; }
+  .what-body { grid-column: 5 / span 6; max-width: 40ch; }
+  .badge-slot { grid-column: 11 / -1; grid-row: 2; display: grid; gap: 8px; }
+  .badge-slot-box {
+    display: grid; place-items: center; text-align: center; aspect-ratio: 1; padding: 12px;
+    font-size: 11px; line-height: 1.4; border: 1px dashed var(--rule); color: var(--fg-muted); background: var(--glass);
+  }
+
+  .ways-head { margin-top: clamp(72px, 10vw, 144px); align-items: end; row-gap: 8px; padding-bottom: 18px; border-bottom: 1px solid var(--ink); }
+  .ways-title { grid-column: 1 / span 7; }
+  .ways-note { grid-column: 8 / -1; text-align: right; margin: 0; }
+  .ways { list-style: none; margin: 0; padding: 0; }
+  .way { padding-block: 30px 34px; border-bottom: 1px solid var(--rule); align-items: start; row-gap: 14px; }
+  .way-k { grid-column: 1 / span 1; font-size: 13px; padding-top: 0.55em; }
+  .way-name { grid-column: 2 / span 4; font-weight: 400; margin: 0; font-size: clamp(1.8rem, 1rem + 2.2vw, 3.2rem); line-height: 1; letter-spacing: -0.02em; }
+  .way-d { grid-column: 6 / span 4; }
+  .way-d p { margin: 0 0 0.7em; }
+  .way-fit { text-transform: none; letter-spacing: 0.02em; }
+  .way-fit b { text-transform: uppercase; letter-spacing: 0.06em; margin-right: 6px; }
+  .way-inc { grid-column: 10 / -1; list-style: none; margin: 0.35em 0 0; padding: 0; font-size: 12.5px; line-height: 1.5; display: grid; gap: 8px; }
+  .way-inc li { padding-left: 16px; position: relative; }
+  .way-inc li::before { content: ''; position: absolute; left: 0; top: 0.72em; width: 8px; height: 1px; background: var(--ink); }
+
+  @media (max-width: 1000px) {
+    .what-statement, .what-body { grid-column: 1 / -1; }
+    .badge-slot { grid-column: 1 / span 6; grid-row: auto; max-width: 180px; }
+    .ways-title, .ways-note { grid-column: 1 / -1; text-align: left; }
+    .way-name { grid-column: 2 / -1; }
+    .way-d { grid-column: 2 / span 7; }
+    .way-inc { grid-column: 9 / -1; }
+  }
+  @media (max-width: 680px) {
+    .way-k { grid-column: 1 / -1; padding: 0; }
+    .way-name, .way-d, .way-inc { grid-column: 1 / -1; }
+  }
+</style>
