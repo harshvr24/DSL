@@ -112,8 +112,15 @@ import { company, formEndpoint, isSet } from '../../config';
           console.info('[contact form stub] would POST', data);
           await new Promise((r) => setTimeout(r, 400));
         } else {
-          const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) });
-          if (!res.ok) throw new Error(String(res.status));
+          // give up after 15 s so a hung connection ends in the failure message, not "Sending…"
+          const ctl = new AbortController();
+          const timer = setTimeout(() => ctl.abort(), 15000);
+          try {
+            const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data), signal: ctl.signal });
+            if (!res.ok) throw new Error(String(res.status));
+          } finally {
+            clearTimeout(timer);
+          }
         }
         form.reset();
         status.textContent = endpoint ? 'Sent. An engineer will reply by email.' : 'Stub mode: nothing was sent (no endpoint configured).';
