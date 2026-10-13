@@ -1,8 +1,9 @@
 import { defineConfig } from 'astro/config';
 
-// Static output for S3 + CloudFront. Set `site` to the production URL.
+// Static output (AWS Amplify Hosting, or S3 + CloudFront). `site` is the production URL:
+// it feeds the canonical link, Open Graph URLs and structured data.
 export default defineConfig({
-  site: 'https://www.example.com', // [PLACEHOLDER: production URL]
+  site: 'https://www.dslhyperscale.com',
   output: 'static',
   build: { inlineStylesheets: 'always' },
   compressHTML: true,

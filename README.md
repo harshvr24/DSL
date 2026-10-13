@@ -63,5 +63,5 @@ Use a private bucket behind CloudFront with Origin Access Control, set the defau
 
 ## Before launch
 
-- Search the repo for `PLACEHOLDER`: email, phone, registered address, CIN, AWS partner tier, production URL (`src/config.ts` and `astro.config.mjs`), and the AWS Partner badge slot.
+- Search the repo for `PLACEHOLDER`: registered address, AWS partner tier and the AWS Partner badge file (`src/config.ts`). The page leaves these out until they are filled in.
 - Search `src/content.ts` for `SUGGESTED`: drafted commitments (durations, rates, support hours, team shapes, FAQ answers, access practices) that need confirming.

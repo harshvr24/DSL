@@ -1,8 +1,6 @@
 ---
 import Opener from '../Opener.astro';
-import { company, formEndpoint } from '../../config';
-import { ph } from '../../content';
-const mailable = !company.email.startsWith('[');
+import { company, formEndpoint, isSet } from '../../config';
 ---
 <section class="section" id="contact" aria-labelledby="contact-h">
   <div class="wrap">
@@ -12,8 +10,8 @@ const mailable = !company.email.startsWith('[');
     <div class="grid contact">
       <div class="contact-direct" data-reveal>
         <p class="label">Direct</p>
-        <p class="contact-line">{mailable ? <a href={`mailto:${company.email}`}>{company.email}</a> : <Fragment set:html={ph(company.email)} />}</p>
-        <p class="contact-line" set:html={ph(company.phone)} />
+        {isSet(company.email) && <p class="contact-line"><a href={`mailto:${company.email}`}>{company.email}</a></p>}
+        {isSet(company.phone) && <p class="contact-line"><a href={company.phoneHref}>{company.phone}</a></p>}
         <p class="label contact-note">Onshore: {company.onshoreLocations}<br />Offshore: {company.offshoreCity}, India</p>
       </div>
 

@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { company } from '../config';
+import { company, isSet } from '../config';
 
 interface Props { title: string; description: string; }
 const { title, description } = Astro.props;
@@ -8,19 +8,20 @@ const site = Astro.site?.toString().replace(/\/$/, '') ?? company.url;
 const canonical = site + '/';
 const ogImage = site + '/og.png';
 
-const jsonLd = {
+// structured data: only details that have actually been filled in
+const jsonLd: Record<string, unknown> = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: company.legalName,
   alternateName: company.shortName,
   url: canonical,
   logo: site + '/favicon-512.png',
-  email: company.email,
-  telephone: company.phone,
-  address: { '@type': 'PostalAddress', streetAddress: company.address, addressCountry: 'IN' },
-  identifier: { '@type': 'PropertyValue', propertyID: 'CIN', value: company.cin },
   knowsAbout: ['Amazon Web Services', 'Cloud migration', 'DevOps', 'Cloud security', 'Data engineering'],
 };
+if (isSet(company.email)) jsonLd.email = company.email;
+if (isSet(company.phone)) jsonLd.telephone = company.phoneHref.replace('tel:', '');
+if (isSet(company.address)) jsonLd.address = { '@type': 'PostalAddress', streetAddress: company.address, addressCountry: 'IN' };
+if (isSet(company.cin)) jsonLd.identifier = { '@type': 'PropertyValue', propertyID: 'CIN', value: company.cin };
 ---
 <!doctype html>
 <html lang="en-IN">

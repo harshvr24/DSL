@@ -1,11 +1,11 @@
 ---
 import Opener from '../Opener.astro';
-import { company } from '../../config';
-import { ph, ways } from '../../content';
+import { company, isSet } from '../../config';
+import { ways } from '../../content';
 ---
 <section class="section" id="what" aria-labelledby="what-h">
   <div class="wrap">
-    <Opener n="02" title="What we do" id="what-h">AWS Consulting Partner · <Fragment set:html={ph(company.partnerTier)} /></Opener>
+    <Opener n="02" title="What we do" id="what-h">AWS Consulting Partner{isSet(company.partnerTier) && ` · ${company.partnerTier}`}</Opener>
 
     <div class="grid what">
       <p class="display what-statement" data-split>
@@ -18,10 +18,12 @@ import { ph, ways } from '../../content';
           two to three weeks, not after a hiring cycle.
         </p>
       </div>
-      <aside class="badge-slot" aria-label="AWS Partner badge" data-reveal>
-        <span class="label">Slot · AWS Partner badge</span>
-        <span class="badge-slot-box mono">[PLACEHOLDER: official AWS Partner badge from Partner Central]</span>
-      </aside>
+      {/* shown once company.partnerBadge points at the official badge file */}
+      {isSet(company.partnerBadge) && (
+        <aside class="badge-slot" aria-label="AWS Partner badge" data-reveal>
+          <img src={company.partnerBadge} alt={`AWS Partner${isSet(company.partnerTier) ? `, ${company.partnerTier}` : ''}`} loading="lazy" />
+        </aside>
+      )}
     </div>
 
     <div class="ways-head grid">
@@ -50,11 +52,8 @@ import { ph, ways } from '../../content';
   .what { row-gap: 40px; align-items: start; }
   .what-statement { grid-column: 1 / span 10; }
   .what-body { grid-column: 5 / span 6; max-width: 40ch; }
-  .badge-slot { grid-column: 11 / -1; grid-row: 2; display: grid; gap: 8px; }
-  .badge-slot-box {
-    display: grid; place-items: center; text-align: center; aspect-ratio: 1; padding: 12px;
-    font-size: 11px; line-height: 1.4; border: 1px dashed var(--rule); color: var(--fg-muted); background: var(--glass);
-  }
+  .badge-slot { grid-column: 11 / -1; grid-row: 2; }
+  .badge-slot img { width: 100%; height: auto; }
 
   .ways-head { margin-top: clamp(72px, 10vw, 144px); align-items: end; row-gap: 8px; padding-bottom: 18px; border-bottom: 1px solid var(--ink); }
   .ways-title { grid-column: 1 / span 7; }

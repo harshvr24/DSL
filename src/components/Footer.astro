@@ -1,6 +1,6 @@
 ---
-import { company } from '../config';
-import { ph, places } from '../content';
+import { company, isSet } from '../config';
+import { places } from '../content';
 ---
 <footer class="footer" data-footer>
   <div class="wrap">
@@ -16,8 +16,9 @@ import { ph, places } from '../content';
       <p class="footer-mark" aria-hidden="true"><span class="footer-mask"><span data-footer-mark>DSL</span></span></p>
       <div class="footer-legal mono">
         <p><b>{company.legalName}</b></p>
-        <p>CIN <Fragment set:html={ph(company.cin)} /></p>
-        <p set:html={ph(company.address)} />
+        {isSet(company.cin) && <p>CIN {company.cin}</p>}
+        {isSet(company.address) && <p>{company.address}</p>}
+        {isSet(company.email) && <p><a href={`mailto:${company.email}`}>{company.email}</a>{isSet(company.phone) && <> · <a href={company.phoneHref}>{company.phone}</a></>}</p>}
       </div>
       <div class="footer-meta mono">
         <p>© {new Date().getFullYear()} {company.legalName}</p>

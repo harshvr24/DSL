@@ -5,3 +5,6 @@ dist/
 
 # design reference screenshot (another site), not part of this project
 image.png
+
+# console screenshots (contain account details)
+Screenshot*.png
